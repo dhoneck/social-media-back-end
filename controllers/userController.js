@@ -8,7 +8,6 @@ module.exports = {
   },
   getAllUsers(req, res) {
     User.find()
-      .populate('friends')
       .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
@@ -47,7 +46,7 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   addFriend(req, res) {
-    // '/:userId/friends/:friendId'
+    // TODO: Prevent user from adding themselves
     User.findOneAndUpdate(
       { _id: req.params.userId },
       { $addToSet: { friends: req.params.friendId } },
