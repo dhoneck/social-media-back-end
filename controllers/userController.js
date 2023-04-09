@@ -8,6 +8,7 @@ module.exports = {
   },
   getAllUsers(req, res) {
     User.find()
+      .populate('friends')
       .then((users) => res.json(users))
       .catch((err) => res.status(500).json(err));
   },
@@ -15,6 +16,7 @@ module.exports = {
     User.findOne(
         { _id: req.params.userId },
     )
+      .populate('friends')
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with that ID' })
@@ -45,9 +47,30 @@ module.exports = {
       .catch((err) => res.status(500).json(err));
   },
   addFriend(req, res) {
-    res.send("NOT IMPLEMENTED: addFriend");
+    // '/:userId/friends/:friendId'
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $addToSet: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   deleteFriend(req, res) {
-    res.send("NOT IMPLEMENTED: deleteFriend");
+    User.findOneAndUpdate(
+      { _id: req.params.userId },
+      { $pull: { friends: req.params.friendId } },
+      { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with this id!' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
   }
 }
