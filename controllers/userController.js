@@ -1,18 +1,48 @@
+const User = require('../models/User')
+
 module.exports = {
   addUser(req, res) {
-    res.send("NOT IMPLEMENTED: addUser");
+    User.create(req.body)
+      .then((user) => res.json(user))
+      .catch((err) => res.status(500).json(err));
   },
   getAllUsers(req, res) {
-    res.send("NOT IMPLEMENTED: getAllUsers");
+    User.find()
+      .then((users) => res.json(users))
+      .catch((err) => res.status(500).json(err));
   },
   getSingleUser(req, res) {
-    res.send("NOT IMPLEMENTED: getSingleUser");
+    User.findOne(
+        { _id: req.params.userId },
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   editUser(req, res) {
-    res.send("NOT IMPLEMENTED: editUser");
+    User.findOneAndUpdate(
+        { _id: req.params.userId },
+        { $set: req.body },
+        { runValidators: true, new: true }
+    )
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : res.json(user)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   deleteUser(req, res) {
-    res.send("NOT IMPLEMENTED: deleteUser");
+    User.findOneAndDelete({ _id: req.params.userId })
+      .then((user) =>
+        !user
+          ? res.status(404).json({ message: 'No user with that ID' })
+          : res.json({ message: 'User successfully deleted' })
+      )
+      .catch((err) => res.status(500).json(err));
   },
   addFriend(req, res) {
     res.send("NOT IMPLEMENTED: addFriend");

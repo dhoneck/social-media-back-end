@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    match: [validateEmail, 'Please fill a valid email address'],
+    // TODO: Add validation
   },
   thoughts: [
     {
