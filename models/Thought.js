@@ -1,25 +1,30 @@
 const mongoose = require('mongoose');
 
-const reactionSchema = new mongoose.Schema({
-  reactionId: {
-    type: mongoose.Schema.Types.ObjectId,
-    default: () => new mongoose.Schema.Types.ObjectId(),
+const reactionSchema = new mongoose.Schema(
+  {
+    reactionId: {
+      type: mongoose.Schema.Types.ObjectId,
+      default: () => new mongoose.Types.ObjectId(),
+    },
+    reactionBody: {
+      type: String,
+      required: true,
+      // TODO: TEST - Add 280 character max validation
+      maxLength: 280,
+    },
+    username: {
+      type: String,
+      required: true,
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+    },
   },
-  reactionBody: {
-    type: String,
-    required: true,
-    // TODO: TEST - Add 280 character max validation
-    maxLength: 280,
-  },
-  username: {
-    type: String,
-    required: true,
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-});
+  {
+    id: false,
+  }
+);
 
 const thoughtSchema = new mongoose.Schema({
   thoughText: {
