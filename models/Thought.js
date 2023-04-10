@@ -27,13 +27,14 @@ const reactionSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: formatDateTime
+      get: formatDateTime,
     },
   },
   {
     toJSON: {
       getters: true,
     },
+    id: false,
   }
 );
 
@@ -48,11 +49,11 @@ const thoughtSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
-      get: formatDateTime
+      get: formatDateTime,
     },
     username: {
       type: String,
-      required: true
+      required: true,
     },
     reactions: [reactionSchema],
   },
@@ -60,6 +61,7 @@ const thoughtSchema = new mongoose.Schema(
     toJSON: {
       getters: true,
     },
+    id: false,
   }
 );
 

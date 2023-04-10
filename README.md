@@ -3,7 +3,7 @@
 # Social Media Back End
 
 ## Description
-This is a sample back end API for a social media application. It uses Express for routing and MongoDB and Mongoose to handle the data. Data for this application consists of users, friends, thoughts, and reactions. This will be a good starting point for developers to expand upon.
+This is a sample back end API for a social media application. It uses Express for routing and MongoDB and Mongoose to handle the data. Data for this application consists of users, friends, thoughts, and reactions. This will be a good starting point for developers to expand upon. Here is a [demo](https://drive.google.com/file/d/1VXI_j9QGkoVLu_WPBaWrkNjRoxoD3HLe/view).
 
 ## Table of Contents
 1. [Installation](#installation)
