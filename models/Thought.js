@@ -1,5 +1,14 @@
 const mongoose = require('mongoose');
 
+// Format string - example: Apr 10, 2023, 1:31 PM
+function formatDateTime(dateTime) {
+  let formattedDateTime = dateTime.toLocaleDateString(
+    'en-us',
+    { month:'short', day:'numeric', year:'numeric', hour:'numeric', minute:'numeric' }
+  );
+  return formattedDateTime;
+}
+
 const reactionSchema = new mongoose.Schema(
   {
     reactionId: {
@@ -9,7 +18,6 @@ const reactionSchema = new mongoose.Schema(
     reactionBody: {
       type: String,
       required: true,
-      // TODO: TEST - Add 280 character max validation
       maxLength: 280,
     },
     username: {
@@ -19,38 +27,47 @@ const reactionSchema = new mongoose.Schema(
     createdAt: {
       type: Date,
       default: Date.now,
+      get: formatDateTime
     },
   },
   {
-    id: false,
+    toJSON: {
+      getters: true,
+    },
   }
 );
 
-const thoughtSchema = new mongoose.Schema({
-  thoughText: {
-    type: String,
-    required: true,
-    // TODO: TEST - Add 1 to 280 character validation
-    minLength: [1, 'Please add 1 to 280 characters'],
-    maxLength: [280, 'Please add 1 to 280 characters'],
+const thoughtSchema = new mongoose.Schema(
+  {
+    thoughText: {
+      type: String,
+      required: true,
+      minLength: [1, 'Please add 1 to 280 characters'],
+      maxLength: [280, 'Please add 1 to 280 characters'],
+    },
+    createdAt: {
+      type: Date,
+      default: Date.now,
+      get: formatDateTime
+    },
+    username: {
+      type: String,
+      required: true
+    },
+    reactions: [reactionSchema],
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
-    // TODO: Use a getter method to format the timestamp on query
-  },
-  username: {
-    type: String,
-    required: true
-  },
-  reactions: [reactionSchema],
-});
+  {
+    toJSON: {
+      getters: true,
+    },
+  }
+);
 
 thoughtSchema
-    .virtual('reactionCount')
-    .get(function () {
-      return this.reactions.length;
-    });
+  .virtual('reactionCount')
+  .get(function () {
+    return this.reactions.length;
+  });
 
 const Thought = mongoose.model('Thought', thoughtSchema);
 

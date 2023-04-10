@@ -42,7 +42,7 @@ module.exports = {
     let thoughtData = {
       'thoughText': req.body.thoughtText,
       'username': req.body.username,
-    }
+    };
     Thought
       .findOneAndUpdate(
         { _id: req.params.thoughtId },
@@ -59,12 +59,26 @@ module.exports = {
   deleteThought(req, res) {
     Thought
       .findOneAndDelete({ _id: req.params.thoughtId })
-      .then((thought) =>
-        // TODO: Remove thought from thoughts array for users
-        !thought
-          ? res.status(404).json({ message: 'No thought with that ID' })
-          : res.json({ message: 'Thought successfully deleted' })
-      )
+      .then((thought) => {
+        if (!thought) {
+          res.status(404).json({ message: 'No thought with that ID' })
+        } else {
+          User
+            .findOneAndUpdate(
+              { thoughts: { $elemMatch: { $eq: req.params.thoughtId } } },
+              { $pull: { thoughts: req.params.thoughtId } },
+              { new: true }
+            )
+            .then((user) => {
+              if (!user) {
+                res.status(404).json({ message: 'Thought successfully deleted but there was no associated user' })
+              } else {
+                res.json({ message: 'Thought successfully deleted and removed from User' })
+              }
+            })
+
+        }
+      })
       .catch((err) => res.status(500).json(err));
   },
   addReaction(req, res) {

@@ -1,35 +1,30 @@
 const mongoose = require('mongoose');
 
-let validateEmail = function(email) {
-  // TODO: Use a different regex statement?
-  let re = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
-  return re.test(email);
-}
-
-const userSchema = new mongoose.Schema({
-  username: {
-    type: String,
-    unique: true,
-    required: true,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    unique: true,
-    // TODO: Add email validation
-  },
-  thoughts: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'Thought',
+const userSchema = new mongoose.Schema(
+  {
+    username: {
+      type: String,
+      unique: true,
+      required: true,
+      trim: true,
     },
-  ],
-  friends: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
-    }
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: [/^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/, 'Please enter a valid email']
+    },
+    thoughts: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Thought',
+      },
+    ],
+    friends: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+      }
     ],
   },
   {
