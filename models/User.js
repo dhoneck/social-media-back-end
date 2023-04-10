@@ -17,7 +17,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
-    // TODO: Add validation
+    // TODO: Add email validation
   },
   thoughts: [
     {
@@ -43,8 +43,9 @@ const userSchema = new mongoose.Schema({
 userSchema
     .virtual('friendCount')
     .get(function () {
-      return this.friends.length
-    })
+      return this.friends.length;
+    });
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;

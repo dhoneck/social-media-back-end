@@ -16,6 +16,7 @@ module.exports = {
         { _id: req.params.userId },
     )
       .populate('friends')
+      .populate('thoughts')
       .then((user) =>
         !user
           ? res.status(404).json({ message: 'No user with that ID' })

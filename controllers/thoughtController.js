@@ -1,18 +1,67 @@
+const Thought = require("../models/Thought");
+const User = require("../models/User");
+
 module.exports = {
   addThought(req, res) {
-    res.send("NOT IMPLEMENTED: addThought");
+    let thoughtData = {
+      'thoughText': req.body.thoughtText,
+      'username': req.body.username,
+    }
+    Thought.create(thoughtData)
+      .then((thought) => {
+        User.findOneAndUpdate(
+          { _id: req.body.userId },
+          { $addToSet: { thoughts: thought._id }},
+          { runValidators: true, new: true }
+        )
+        .catch((err) => res.status(500).json(err));
+        res.json(thought);
+      })
+      .catch((err) => res.status(500).json(err));
   },
   getAllThoughts(req, res) {
-    res.send("NOT IMPLEMENTED: getAllThoughts");
+    Thought.find()
+      .then((thoughts) => res.json(thoughts))
+      .catch((err) => res.status(500).json(err));
   },
   getSingleThought(req, res) {
-    res.send("NOT IMPLEMENTED: getSingleThought");
+    Thought.findOne(
+        { _id: req.params.thoughtId },
+    )
+      .populate('reactions')
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with that ID' })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   editThought(req, res) {
-    res.send("NOT IMPLEMENTED: editThought");
+    let thoughtData = {
+      'thoughText': req.body.thoughtText,
+      'username': req.body.username,
+    }
+    Thought.findOneAndUpdate(
+        { _id: req.params.thoughtId },
+        { $set: thoughtData },
+        { runValidators: true, new: true }
+    )
+      .then((thought) =>
+        !thought
+          ? res.status(404).json({ message: 'No thought with that ID' })
+          : res.json(thought)
+      )
+      .catch((err) => res.status(500).json(err));
   },
   deleteThought(req, res) {
-    res.send("NOT IMPLEMENTED: deleteThought");
+    Thought.findOneAndDelete({ _id: req.params.thoughtId })
+      .then((thought) =>
+        // TODO: Remove thought from thoughts array for users
+        !thought
+          ? res.status(404).json({ message: 'No thought with that ID' })
+          : res.json({ message: 'Thought successfully deleted' })
+      )
+      .catch((err) => res.status(500).json(err));
   },
   addReaction(req, res) {
     res.send("NOT IMPLEMENTED: addReaction");
